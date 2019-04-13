@@ -1,6 +1,6 @@
 # degiro-api
 
-This repository contains an unofficial DeGiro API wrapper for Python.
+This repository contains an unofficial DeGiro API module for Python.
 
 ## Install
 
@@ -24,3 +24,7 @@ print(f'{products[0]["name"]}: {products[0]["isin"]}')
 ```
 
 For more examples, see [examples](./examples).
+
+## Logging
+
+The module uses [logging](https://docs.python.org/3/library/logging.html). It should be adjusted as a project-wide modification.
