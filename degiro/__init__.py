@@ -1,7 +1,5 @@
 import requests
 import logging
-from logging.config import fileConfig
-fileConfig('logging_config.ini')
 
 from .utils import pretty_json
 from .client_info import ClientInfo

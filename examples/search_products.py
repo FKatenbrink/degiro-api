@@ -1,8 +1,8 @@
-from src.degiro import DeGiro
-from src.product import Product
-from src.utils import pretty_json
+from degiro import DeGiro
+from degiro.product import Product
+from degiro.utils import pretty_json
 
-from .config import DEGIRO_USERNAME, DEGIRO_PASSWORD
+from examples.config import DEGIRO_USERNAME, DEGIRO_PASSWORD
 
 def main():
   degiro = DeGiro()
