@@ -1,6 +1,6 @@
 # DeGiro-API
 
-This repository contains a non-official DeGiro API library for Python.
+This repository contains an unofficial DeGiro API wrapper for Python.
 
 ## Usage
 
