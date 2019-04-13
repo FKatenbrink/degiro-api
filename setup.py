@@ -10,12 +10,12 @@ setup(name='degiro-api',
         'Topic :: Internet :: WWW/HTTP',
       ],
       keywords='DeGiro API Wrapper',
-      url='https://github.com/FKatenbrink/DeGiro-API',
+      url='https://github.com/FKatenbrink/degiro-api',
       author='Florian Katenbrink',
       author_email='f.katenbrink@gmail.com',
       license='MIT',
       packages=['degiro'],
       install_requires=[
-          'requests',
+        'requests',
       ]
 )
