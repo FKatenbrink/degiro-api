@@ -1,4 +1,4 @@
-# DeGiro-API
+# degiro-api
 
 This repository contains an unofficial DeGiro API wrapper for Python.
 
