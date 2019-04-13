@@ -1,0 +1,4 @@
+import os
+
+DEGIRO_USERNAME = os.getenv('DEGIRO_USERNAME', '<SECRET>')
+DEGIRO_PASSWORD = os.getenv('DEGIRO_PASSWORD', '<SECRET>')
