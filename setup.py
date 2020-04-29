@@ -14,7 +14,7 @@ setup(name='degiro-api',
       author='Florian Katenbrink',
       author_email='f.katenbrink@gmail.com',
       license='MIT',
-      packages=['degiro'],
+      packages=find_packages(),
       install_requires=[
         'requests',
       ]
