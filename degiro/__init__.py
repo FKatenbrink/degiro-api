@@ -1,5 +1,6 @@
 import requests
 import logging
+import json
 from datetime import datetime, timedelta
 
 from .utils import pretty_json
@@ -9,6 +10,7 @@ from .product import Product
 class DeGiro:
   __LOGIN_URL           = 'https://trader.degiro.nl/login/secure/login'
   __PRODUCT_SEARCH_URL  = 'https://trader.degiro.nl/product_search/secure/v5/products/lookup'
+  __PRODUCT_INFO_URL    = 'https://trader.degiro.nl/product_search/secure/v5/products/info'
   __CLIENT_INFO_URL     = 'https://trader.degiro.nl/pa/secure/client'
   __TRANSACTIONS_URL    = 'https://trader.degiro.nl/reporting/secure/v4/transactions'
   __ORDERS_URL          = 'https://trader.degiro.nl/reporting/secure/v4/order-history'
@@ -19,11 +21,12 @@ class DeGiro:
   def __init__(self):
     self.logger = logging.getLogger(self.__class__.__name__)
 
-  def __request(self, url, payload, request_type=__GET_REQUEST, error_message='An error occurred.'):
+  def __request(self, url, payload=None, request_type=__GET_REQUEST, data=None, json=None, error_message='An error occurred.'):
     if request_type == DeGiro.__GET_REQUEST:
       response = requests.get(url, params=payload)
     elif request_type == DeGiro.__POST_REQUEST:
-      response = requests.post(url, json=payload)
+      header = {'content-type': 'application/json'}
+      response = requests.post(url, headers=header, params=payload, data=data, json=json)
     else:
       raise Exception(f'Unknown request type: {request_type}')
 
@@ -39,7 +42,7 @@ class DeGiro:
       'isPassCodeReset': False,
       'isRedirectToMobile': False
     }
-    login_response = self.__request(DeGiro.__LOGIN_URL, login_payload, request_type=DeGiro.__POST_REQUEST, error_message='Could not login.')
+    login_response = self.__request(DeGiro.__LOGIN_URL, json=login_payload, request_type=DeGiro.__POST_REQUEST, error_message='Could not login.')
     self.session_id = login_response['sessionId']
 
     client_info_payload = { 'sessionId': self.session_id }
@@ -60,6 +63,15 @@ class DeGiro:
     else:
       return products
 
+  def productsByIds(self, ids):
+    product_search_payload = {
+      'intAccount': self.client_info.account_id,
+      'sessionId': self.session_id
+    }
+    return self.__request(DeGiro.__PRODUCT_INFO_URL, product_search_payload, request_type=DeGiro.__POST_REQUEST,
+                          data=json.dumps([str(id) for id in ids]), error_message='Could not get product info.')['data']
+
+
   def transactions(self, from_date, to_date, group_transactions=False):
     transactions_payload = {
       'fromDate': from_date.strftime('%d/%m/%Y'),
@@ -69,7 +81,7 @@ class DeGiro:
       'sessionId': self.session_id
     }
     return self.__request(DeGiro.__TRANSACTIONS_URL, transactions_payload, error_message='Could not get transactions.')['data']
-    
+
   def orders(self, from_date, to_date):
     orders_payload = {
       'fromDate': from_date.strftime('%d/%m/%Y'),
@@ -80,5 +92,5 @@ class DeGiro:
     # The DeGiro API requires the time span to be max 90 days, otherwise it returns orders between `fromDate` and `fromDate + 90 days`.
     if (toDate - fromDate).days > 90:
       raise Exception('The DeGiro API requires the time span to be max 90 days.')
-    
+
     return self.__request(DeGiro.__ORDERS_URL, orders_payload, error_message='Could not get orders.')['data']
